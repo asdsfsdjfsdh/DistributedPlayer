@@ -103,48 +103,34 @@ liyang/src/main/ets/
 ## 数据库设计
 
 ### 概述
-- 本地数据库: RelationalStore（6张表）
-- 用户唯一标识: `user_id`（本地UUID），所有业务表关联此字段
-- 云数据库以 `user_id` 为分区键实现多端同步
+- 后端 MySQL：用户主数据、在线歌曲、歌单/收藏/历史主数据（详见 @docs/backend-plan.md）
+- App 本地 DB (RelationalStore) 与 cloudSwitch 同步：仅存储离线缓存与本地歌曲元数据
+- App 不在本地存储 `user_profile`，用户身份由后端 JWT Token 鉴定
 
-### user_profile
+### song（纯本地表，不参与云同步）
 | 字段 | 类型 | 说明 |
 |---|---|---|
-| user_id (PK) | TEXT | 本地生成UUID，统一标识 |
-| auth_type | INTEGER | 0=华为账号 1=邮箱 |
-| openid | TEXT | 华为OpenID（auth_type=0时有效） |
-| email | TEXT | 邮箱地址（auth_type=1时有效） |
-| password_hash | TEXT | 密码哈希（auth_type=1时有效） |
-| nickname | TEXT | 用户昵称 |
-| avatar_url | TEXT | 头像地址 |
-| theme | INTEGER | 0=默认 1=深色 |
-| sync_time | INTEGER | 最后同步时间戳 |
-
-### playlist
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| id (PK) | INTEGER | 自增主键 |
-| name | TEXT | 歌单名称 |
-| cover_url | TEXT | 封面图 |
-| is_local | INTEGER | 0=在线 1=本地创建 |
-| owner_user_id | TEXT | FK → user_profile.user_id |
-| create_time | INTEGER | 创建时间戳 |
-| update_time | INTEGER | 更新时间戳 |
-
-### song
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| id (PK) | TEXT | song_id (本地路径/在线ID) |
+| id (PK) | TEXT | 本地文件路径作为唯一标识 |
 | title | TEXT | 歌曲名 |
 | artist | TEXT | 歌手 |
 | album | TEXT | 专辑 |
 | duration | INTEGER | 时长(ms) |
-| file_path | TEXT | 本地文件路径(可为空) |
-| cover_url | TEXT | 封面图 |
-| lyrics_url | TEXT | 歌词地址 |
-| source | INTEGER | 0=本地 1=在线 |
+| file_path | TEXT | 完整文件路径 |
+| cover_url | TEXT | 本地封面图路径 |
+| source | INTEGER | 固定为 0（本地扫描） |
+| scan_time | INTEGER | 扫描发现时间戳 |
 
-### playlist_song（多对多关联）
+### playlist（云端同步表，后端数据的离线缓存副本）
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| id (PK) | INTEGER | 与后端 playlist.id 对应 |
+| name | TEXT | 歌单名称 |
+| cover_url | TEXT | 封面图 |
+| is_local | INTEGER | 0=在线 1=本地创建 |
+| create_time | INTEGER | 创建时间戳 |
+| update_time | INTEGER | 更新时间戳 |
+
+### playlist_song（云端同步表）
 | 字段 | 类型 | 说明 |
 |---|---|---|
 | playlist_id | INTEGER | FK → playlist |
@@ -153,28 +139,27 @@ liyang/src/main/ets/
 | add_time | INTEGER | 添加时间 |
 | PK: (playlist_id, song_id) |
 
-### favorite
+### favorite（云端同步表）
 | 字段 | 类型 | 说明 |
 |---|---|---|
-| user_id | TEXT | FK → user_profile.user_id |
-| song_id | TEXT | FK → song |
+| song_id | TEXT | FK → song（在线歌曲ID） |
 | favorite_time | INTEGER | 收藏时间 |
-| PK: (user_id, song_id) |
+| PK: user_id 由后端 API 鉴定 |
 
-### play_history
+### play_history（云端同步表）
 | 字段 | 类型 | 说明 |
 |---|---|---|
 | id (PK) | INTEGER | 自增 |
-| user_id | TEXT | FK → user_profile.user_id |
 | song_id | TEXT | FK → song |
 | play_time | INTEGER | 播放时间戳 |
 | progress | INTEGER | 播放进度(ms) |
 
-### 云数据库同步策略
-- 以 **user_id 为分区键** 实现用户数据隔离
-- 同步表：playlist, playlist_song, favorite, play_history
-- 不同步：user_profile 密码字段、song 表中 source=0 的本地记录
-- 离线变更在设备联网后自动合并
+### 数据职责划分
+| 存储位置 | 职责 |
+|---|---|
+| **后端 MySQL** | 用户/密码/在线歌曲/歌单主数据/收藏/历史主数据 |
+| **App 本地 DB** | 本地歌曲元数据（source=0）、离线缓存副本 |
+| **cloudSwitch** | playlist / favorite / history 离线副本的多设备同步 |
 
 ---
 
@@ -182,8 +167,8 @@ liyang/src/main/ets/
 
 ### 第一阶段：基础架构
 - [ ] 数据模型定义（Song, Playlist, Lyric）
-- [x] 数据模型定义（UserProfile）
-- [x] 数据库初始化（DatabaseHelper — 建表 + cloudSwitch + setDistributedTables 云端协同）
+- [x] UserProfile 数据模型（API模型，fromResponse/toRequestBody）
+- [x] 数据库初始化（DatabaseHelper — song本地表 + cloudSwitch + setDistributedTables）
 - [ ] 认证服务（AuthService — 华为静默登录 + 邮箱注册/登录 + 游客模式）
 - [ ] 页面导航框架（Navigation + NavPathStack + 所有页面占位骨架）
 - [ ] LoginPage / RegisterPage / LoginDialog 组件
