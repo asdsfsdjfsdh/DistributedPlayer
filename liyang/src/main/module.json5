@@ -10,6 +10,16 @@
     ],
     "deliveryWithInstall": true,
     "installationFree": false,
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.DISTRIBUTED_DATASYNC",
+        "reason": "$string:permission_distributed_data_reason",
+        "usedScene": {
+          "abilities": ["LiyangAbility"],
+          "when": "inuse"
+        }
+      }
+    ],
     "pages": "$profile:main_pages",
     "abilities": [
       {

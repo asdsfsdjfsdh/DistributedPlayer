@@ -11,6 +11,10 @@
     {
       "name": "LiyangAbility_label",
       "value": "label"
+    },
+    {
+      "name": "permission_distributed_data_reason",
+      "value": "用于同步您的歌单和收藏数据到云端，实现多设备数据共享"
     }
   ]
 }

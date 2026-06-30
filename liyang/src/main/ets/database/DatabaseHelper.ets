@@ -8,8 +8,7 @@ const TAG = 'DatabaseHelper'
 // 数据库配置：启用云端协同，多设备数据自动同步
 const STORE_CONFIG: relationalStore.StoreConfig = {
   name: 'distributed_player.db',
-  securityLevel: relationalStore.SecurityLevel.S1,
-  cloudSwitch: true
+  securityLevel: relationalStore.SecurityLevel.S1
 }
 
 // 云端同步表名列表（在建表后调用 setDistributedTables 注册）

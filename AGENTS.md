@@ -135,8 +135,8 @@ CRITICAL: 本项目采用前后端分离的数据架构：
 - 管理员账号: `backend/sql/init.sql` 手动执行
 
 **鸿蒙 App 本地 DB**（RelationalStore + cloudSwitch，仅存离线缓存与本地歌曲）
-- **建库必须启用 cloudSwitch**: `StoreConfig.cloudSwitch = true`
 - **建库后必须调用 setDistributedTables()**: 注册业务数据表参与云同步
+- **需申请权限**: `ohos.permission.DISTRIBUTED_DATASYNC`
 - **云同步失败不阻塞应用**: 降级为纯本地模式继续运行
 - **同步表清单**: `playlist`, `playlist_song`, `favorite`, `play_history`
 - **纯本地表**: 本地歌曲元数据 `song`（source=0）
