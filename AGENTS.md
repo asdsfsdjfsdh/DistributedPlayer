@@ -43,3 +43,35 @@ CRITICAL: 每个阶段功能实现完成后，必须及时更新 docs/implementa
 
 CRITICAL: docs/implementation-plan.md、opencode.json、AGENTS.md 三个文件必须
 纳入 git 版本管理，保证团队协作时计划同步。
+
+## Git 提交规范
+CRITICAL: 所有 git commit message 必须使用中文，遵循以下模板：
+
+```
+<类型>: <简短描述>
+
+<详细说明（可选）>
+```
+
+类型（type）必须使用以下之一：
+- `feat` — 新功能
+- `fix` — 修复bug
+- `docs` — 文档更新
+- `style` — 代码格式调整（不影响功能）
+- `refactor` — 代码重构
+- `test` — 测试相关
+- `chore` — 构建/工具/依赖等杂项
+
+示例：
+```
+feat: 新增本地音乐扫描服务
+```
+```
+fix: 修复播放页进度条拖动卡顿问题
+
+进度条在拖动时频繁触发onChange回调导致UI阻塞，
+改为使用onChangeEnd只在拖动结束时更新进度。
+```
+```
+docs: 更新实现计划，标记第一阶段已完成
+```
