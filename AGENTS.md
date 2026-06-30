@@ -87,6 +87,17 @@ CRITICAL: 编写代码时必须及时添加注释，注释应使用中文。
 - 复杂逻辑：关键步骤必须添加行内注释
 - 私有字段：重要字段须注释其含义
 
+### 数据库云端协同规范
+CRITICAL: 本项目的本地数据库启用了云端协同（RelationalStore + cloudSwitch），不是纯本地数据库。
+
+- **建库必须启用 cloudSwitch**: `StoreConfig.cloudSwitch = true`
+- **建库后必须调用 setDistributedTables()**: 注册业务数据表参与云同步
+- **用户敏感字段不参与云同步**: `password_hash` 等字段所在表不列入同步表清单
+- **云同步失败不阻塞应用**: 降级为纯本地模式继续运行
+- **同步表清单**: `playlist`, `playlist_song`, `favorite`, `play_history`
+- **纯本地表**: `user_profile`, 本地歌曲元数据 `song`（source=0）
+- 新增表时须评估是否需要加入 `CLOUD_SYNC_TABLES`
+
 ## Git 提交规范
 CRITICAL: 所有 git commit message 必须使用中文，遵循以下模板：
 

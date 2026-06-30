@@ -21,7 +21,7 @@
 | 服务卡片 | `FormExtensionAbility` + `@bundle` widget | 桌面快捷播放控制卡片 |
 | 页面导航 | `Navigation` + `NavPathStack` | 首页/歌单详情/播放页/收藏页导航 |
 | 列表优化 | `LazyForEach` + `IDataSource` | 虚拟渲染歌曲列表，关键词搜索 |
-| 云数据库 | `@ohos.data.cloudData` | 歌单/收藏/历史多端同步 |
+| 云数据库 | `@ohos.data.relationalStore` + cloudSwitch | 歌单/收藏/历史多端自动同步 |
 | 华为账号登录 | `@ohos.account.appAccount` Account Kit | 静默登录 / 授权弹窗 |
 | 邮箱认证 | 本地密码哈希 + Token | 邮箱注册 / 登录 |
 
@@ -183,7 +183,7 @@ liyang/src/main/ets/
 ### 第一阶段：基础架构
 - [ ] 数据模型定义（Song, Playlist, Lyric）
 - [x] 数据模型定义（UserProfile）
-- [x] 数据库初始化（DatabaseHelper — 建表 + user_profile 表）
+- [x] 数据库初始化（DatabaseHelper — 建表 + cloudSwitch + setDistributedTables 云端协同）
 - [ ] 认证服务（AuthService — 华为静默登录 + 邮箱注册/登录 + 游客模式）
 - [ ] 页面导航框架（Navigation + NavPathStack + 所有页面占位骨架）
 - [ ] LoginPage / RegisterPage / LoginDialog 组件
