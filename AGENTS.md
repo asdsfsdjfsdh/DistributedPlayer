@@ -44,6 +44,42 @@ CRITICAL: 每个阶段功能实现完成后，必须及时更新 docs/implementa
 CRITICAL: docs/implementation-plan.md、opencode.json、AGENTS.md 三个文件必须
 纳入 git 版本管理，保证团队协作时计划同步。
 
+## 代码规范
+
+### Model 设计规范
+所有数据模型必须遵循以下四层结构：
+
+1. **接口（Interface）** — 定义对外公开的只读数据契约，命名以 `Data` 后缀结尾
+2. **私有字段（Private Fields）** — 所有属性使用 `private` 字段存储，通过 `get`/`set` 访问器暴露
+3. **工厂方法（Factory）** — `static create(data: Partial<T>): Model` 构造新实例
+4. **序列化（Serialization）** — 必须实现以下方法：
+   - `toObject(): T` — 序列化为纯数据对象
+   - `fromResultSet(row): Model` — 从数据库结果集反序列化（静态方法）
+   - `toValuesBucket(): Record<string, Object>` — 序列化为数据库写入格式
+
+```typescript
+// 1. 接口
+export interface SongData {
+  readonly id: string
+  readonly title: string
+}
+
+// 2. 类 = 私有字段 + get/set
+export class Song implements SongData {
+  private _id: string = ''
+  get id(): string { return this._id }
+  set id(value: string) { this._id = value }
+
+  // 3. 工厂方法
+  static create(data: Partial<SongData>): Song { ... }
+
+  // 4. 序列化
+  toObject(): SongData { ... }
+  static fromResultSet(row: Record<string, Object>): Song { ... }
+  toValuesBucket(): Record<string, Object> { ... }
+}
+```
+
 ## Git 提交规范
 CRITICAL: 所有 git commit message 必须使用中文，遵循以下模板：
 
