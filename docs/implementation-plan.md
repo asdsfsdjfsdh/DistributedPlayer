@@ -181,8 +181,9 @@ liyang/src/main/ets/
 ## 实现阶段
 
 ### 第一阶段：基础架构
-- [ ] 数据模型定义（Song, Playlist, Lyric, UserProfile）
-- [ ] 数据库初始化（DatabaseHelper — 建表/迁移）
+- [ ] 数据模型定义（Song, Playlist, Lyric）
+- [x] 数据模型定义（UserProfile）
+- [x] 数据库初始化（DatabaseHelper — 建表 + user_profile 表）
 - [ ] 认证服务（AuthService — 华为静默登录 + 邮箱注册/登录 + 游客模式）
 - [ ] 页面导航框架（Navigation + NavPathStack + 所有页面占位骨架）
 - [ ] LoginPage / RegisterPage / LoginDialog 组件
