@@ -45,7 +45,7 @@ export class DatabaseHelper {
       const error = err as BusinessError
       hilog.error(DOMAIN, TAG, 'Failed to initialize database. Code: %{public}d, message: %{public}s',
         error.code, error.message)
-      throw error
+      throw new Error(`Database init failed: ${error.message}`)
     }
   }
 
@@ -57,7 +57,7 @@ export class DatabaseHelper {
       const error = err as BusinessError
       hilog.error(DOMAIN, TAG, 'Failed to create table. Code: %{public}d, message: %{public}s',
         error.code, error.message)
-      throw error
+      throw new Error(`Create table failed: ${error.message}`)
     }
   }
 
