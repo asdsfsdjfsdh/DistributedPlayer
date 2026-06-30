@@ -1,0 +1,51 @@
+{
+  "module": {
+    "name": "liyang",
+    "type": "entry",
+    "description": "$string:module_desc",
+    "mainElement": "LiyangAbility",
+    "deviceTypes": [
+      "phone",
+      "tablet"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "pages": "$profile:main_pages",
+    "abilities": [
+      {
+        "name": "LiyangAbility",
+        "srcEntry": "./ets/liyangability/LiyangAbility.ets",
+        "description": "$string:LiyangAbility_desc",
+        "icon": "$media:layered_image",
+        "label": "$string:LiyangAbility_label",
+        "startWindowIcon": "$media:startIcon",
+        "startWindowBackground": "$color:start_window_background",
+        "exported": true,
+        "skills": [
+          {
+            "entities": [
+              "entity.system.home"
+            ],
+            "actions": [
+              "ohos.want.action.home"
+            ]
+          }
+        ]
+      }
+    ],
+    "extensionAbilities": [
+      {
+        "name": "LiyangBackupAbility",
+        "srcEntry": "./ets/liyangbackupability/LiyangBackupAbility.ets",
+        "type": "backup",
+        "exported": false,
+        "metadata": [
+          {
+            "name": "ohos.extension.backup",
+            "resource": "$profile:backup_config"
+          }
+        ],
+      }
+    ]
+  }
+}

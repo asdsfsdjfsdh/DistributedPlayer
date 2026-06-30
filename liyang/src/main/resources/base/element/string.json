@@ -1,0 +1,16 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "module description"
+    },
+    {
+      "name": "LiyangAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "LiyangAbility_label",
+      "value": "label"
+    }
+  ]
+}
