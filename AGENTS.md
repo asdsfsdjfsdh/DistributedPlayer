@@ -80,6 +80,13 @@ export class Song implements SongData {
 }
 ```
 
+### 注释规范
+CRITICAL: 编写代码时必须及时添加注释，注释应使用中文。
+- 类、接口、枚举：必须有顶部注释说明用途
+- 公共方法：必须有注释说明参数和返回值
+- 复杂逻辑：关键步骤必须添加行内注释
+- 私有字段：重要字段须注释其含义
+
 ## Git 提交规范
 CRITICAL: 所有 git commit message 必须使用中文，遵循以下模板：
 

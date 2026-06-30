@@ -1,8 +1,10 @@
+// 用户认证类型枚举
 export enum AuthType {
-  HUAWEI = 0,
-  EMAIL = 1
+  HUAWEI = 0,  // 华为账号登录
+  EMAIL = 1     // 邮箱登录
 }
 
+// 用户资料数据契约
 export interface UserProfileData {
   readonly userId: string
   readonly authType: AuthType
@@ -15,6 +17,7 @@ export interface UserProfileData {
   readonly syncTime: number
 }
 
+// 用户资料实体
 export class UserProfile implements UserProfileData {
   private _userId: string = ''
   private _authType: AuthType = AuthType.HUAWEI
@@ -53,6 +56,7 @@ export class UserProfile implements UserProfileData {
   get syncTime(): number { return this._syncTime }
   set syncTime(value: number) { this._syncTime = value }
 
+  // 工厂方法：从部分数据创建用户实例
   static create(data: Partial<UserProfileData>): UserProfile {
     const profile = new UserProfile()
     if (data.userId !== undefined) { profile.userId = data.userId }
@@ -67,6 +71,7 @@ export class UserProfile implements UserProfileData {
     return profile
   }
 
+  // 序列化为纯数据对象
   toObject(): UserProfileData {
     return {
       userId: this._userId,
@@ -81,6 +86,7 @@ export class UserProfile implements UserProfileData {
     }
   }
 
+  // 从数据库结果集反序列化
   static fromResultSet(row: Record<string, Object>): UserProfile {
     const profile = new UserProfile()
     profile.userId = (row['user_id'] as string) ?? ''
@@ -95,6 +101,7 @@ export class UserProfile implements UserProfileData {
     return profile
   }
 
+  // 序列化为数据库写入格式（ValuesBucket）
   toValuesBucket(): Record<string, Object> {
     const bucket: Record<string, Object> = {
       'user_id': this._userId,
@@ -104,6 +111,7 @@ export class UserProfile implements UserProfileData {
       'theme': this._theme,
       'sync_time': this._syncTime
     }
+    // 可选字段仅在有值时写入
     if (this._openid.length > 0) {
       bucket['openid'] = this._openid
     }
